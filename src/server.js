@@ -1,28 +1,38 @@
-const http = require('http');
-let fs = require('fs');
-
+const express = require('express');
+var cors = require('cors');
+const bodyParser = require('body-parser');
+const fs = require('fs');
 const hostname = '127.0.0.1';
+const data_file="entries.json";
 const port = 3333;
 
-const server = http.createServer((req, res) => {
-    if (req.method === 'POST') {
-        let body = '';
-        req.on('data', chunk => {
-            body += chunk.toString(); // convert Buffer to string
-        });
-        req.on('end', () => {
-            console.log(body);
-            res.end('ok');
-        });
-    }
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5000');
-    fs.readFile('entries.json', 'utf8', (err, data) => {
-       res.end(data);
+const corsOptions = {
+    origin: 'http://localhost:5000',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+const app = express();
+app.use(cors(corsOptions));
+app.use(bodyParser.json());
+
+
+app.get('/', (req, res) => {
+    fs.readFile(data_file, 'utf8', (err, data) => {
+        if (err) {
+            res.status(500).send("error reading data file");
+            return;
+        }
+        res.status(200).set('Content-Type', 'application/json').send(data);
     });
 });
 
-server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
+app.options('/', cors());
+
+app.post('/', function (req, res) {
+    fs.writeFileSync(data_file, JSON.stringify(req.body), e => {
+        res.sendStatus(500);
+    });
+    res.sendStatus(200);
 });
+
+app.listen(port, () => console.log(`calendar server listening at http://${hostname}:${port}`));
