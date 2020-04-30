@@ -1,0 +1,23 @@
+{
+  "name": "calendar-server",
+  "version": "1.0.0",
+  "description": "a server for cheeky's calendar",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NivKeidan/calendar-server.git"
+  },
+  "author": "Niv Keidan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NivKeidan/calendar-server/issues"
+  },
+  "homepage": "https://github.com/NivKeidan/calendar-server#readme"
+}
