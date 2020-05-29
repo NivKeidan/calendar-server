@@ -1,7 +1,7 @@
 const express = require('express');
-var cors = require('cors');
-var compression = require('compression');
-var helmet = require('helmet');
+const cors = require('cors');
+const compression = require('compression');
+const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const hostname = process.env.server_url;
@@ -10,7 +10,7 @@ const data_file="entries.json";
 const port = 80;
 
 const corsOptions = {
-    origin: client_origin
+    origin: client_origin,
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
