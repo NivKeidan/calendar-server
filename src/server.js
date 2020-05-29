@@ -4,12 +4,13 @@ var compression = require('compression');
 var helmet = require('helmet');
 const bodyParser = require('body-parser');
 const fs = require('fs');
-const hostname = 'https://dry-falls-97387.herokuapp.com/';
+const hostname = process.env.server_url;
+const client_origin = process.env.client_origin;
 const data_file="entries.json";
 const port = 80;
 
 const corsOptions = {
-    origin: 'http://localhost:5000',
+    origin: client_origin
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
