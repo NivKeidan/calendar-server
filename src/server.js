@@ -2,12 +2,14 @@ const express = require('express');
 const cors = require('cors');
 const compression = require('compression');
 const helmet = require('helmet');
+const cool = require('cool-ascii-faces');
+const path = require('path');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const hostname = process.env.server_url;
 const client_origin = process.env.client_origin;
 const data_file="entries.json";
-const port = 3333;
+const port = process.env.PORT || 3333;
 
 const corsOptions = {
     origin: client_origin,
@@ -19,6 +21,10 @@ app.use(helmet());
 app.use(compression()); //Compress all routes
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')));
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'ejs')
+app.get('/cool', (req, res) => res.send(cool()))
 
 
 app.get('/', (req, res) => {
