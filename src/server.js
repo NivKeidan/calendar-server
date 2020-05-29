@@ -7,7 +7,7 @@ const fs = require('fs');
 const hostname = process.env.server_url;
 const client_origin = process.env.client_origin;
 const data_file="entries.json";
-const port = 80;
+const port = 3333;
 
 const corsOptions = {
     origin: client_origin,

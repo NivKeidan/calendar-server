@@ -13,7 +13,9 @@
     "express": "^4.17.1",
     "helmet": "^3.22.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "ws": "3.3.2"
+  },
   "scripts": {
     "test": "test"
   },
