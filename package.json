@@ -1,12 +1,17 @@
 {
   "name": "calendar-server",
   "version": "1.0.0",
+  "engines": {
+    "node": "8.10.0"
+  },
   "description": "a server for cheeky's calendar",
   "main": "index.js",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
     "cors": "^2.8.5",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "helmet": "^3.22.0"
   },
   "devDependencies": {},
   "scripts": {
