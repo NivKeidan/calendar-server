@@ -6,9 +6,12 @@ const cool = require('cool-ascii-faces');
 const path = require('path');
 const bodyParser = require('body-parser');
 const fs = require('fs');
+let authModule = require('./auth');
+require('dotenv').config();
+
+const data_file="entries.json";
 const hostname = process.env.server_url;
 const client_origin = process.env.client_origin;
-const data_file="entries.json";
 const port = process.env.PORT || 3333;
 
 const corsOptions = {
@@ -24,27 +27,35 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
-app.get('/cool', (req, res) => res.send(cool()))
-
-
-app.get('/', (req, res) => {
-    fs.readFile(data_file, 'utf8', (err, data) => {
-        if (err) {
-
-            res.status(500).send("error reading data file");
-            return;
-        }
-        res.status(200).set('Content-Type', 'application/json').send(data);
-    });
-});
-
 app.options('/', cors());
 
-app.post('/', function (req, res) {
-    fs.writeFileSync(data_file, JSON.stringify({timestamp: Date.now(), data: req.body}), e => {
-        res.sendStatus(500);
-    });
-    res.sendStatus(200);
+app.get('/cool', (req, res) => res.send(cool()))
+app.get('/', (req, res) => {
+    authModule.validateRequest(req,
+       () => {
+           fs.readFile(data_file, 'utf8', (err, data) => {
+               if (err)
+                   res.status(500).send("error reading data file");
+               else
+                   res.status(200).set('Content-Type', 'application/json').send(data);
+           });
+       },
+       () => res.status(401).send('Authentication Failed')
+   );
 });
 
-app.listen(port, () => console.log(`calendar server listening at http://${hostname}:${port}`));
+
+
+app.post('/', function (req, res) {
+    authModule.validateRequest(req,
+        () => {
+            fs.writeFileSync(data_file, JSON.stringify({timestamp: Date.now(), data: req.body}), e => {
+                res.sendStatus(500);
+            });
+            res.sendStatus(200);
+        },
+        () => res.status(401).send('Authentication Failed')
+    );
+});
+
+app.listen(port, () => console.log(`calendar server listening at ${hostname}:${port}`));
