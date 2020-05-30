@@ -1,12 +1,11 @@
 const fs = require('fs');
-const creds_file="creds";
 
 module.exports = {
     validateRequest: function (r, successFn, failFn) {
         const b64auth = (r.headers.authorization || '').split(' ')[1] || '';
         const [login, password] = Buffer.from(b64auth, 'base64').toString().split(':');
         process.stdout.write("validating request...");
-        fs.readFile(creds_file, 'utf8', (err, data) => {
+        fs.readFile(process.env.creds_file, 'utf8', (err, data) => {
             if (err) {
                 process.stdout.write("Error reading credentials: ", err)
                 process.stdout.write("\n");
