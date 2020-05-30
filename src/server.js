@@ -30,32 +30,29 @@ app.set('view engine', 'ejs')
 app.options('/', cors());
 
 app.get('/cool', (req, res) => res.send(cool()))
+
 app.get('/', (req, res) => {
-    authModule.validateRequest(req,
-       () => {
-           fs.readFile(data_file, 'utf8', (err, data) => {
-               if (err)
-                   res.status(500).send("error reading data file");
-               else
-                   res.status(200).set('Content-Type', 'application/json').send(data);
-           });
-       },
-       () => res.status(401).send('Authentication Failed')
-   );
+    if (!authModule.validateRequest(req))
+        res.status(401).send('Authentication Failed');
+    else {
+        fs.readFile(data_file, 'utf8', (err, data) => {
+            if (err)
+                res.status(500).send("error reading data file");
+            else
+                res.status(200).set('Content-Type', 'application/json').send(data);
+        });
+    }
 });
 
-
-
 app.post('/', function (req, res) {
-    authModule.validateRequest(req,
-        () => {
-            fs.writeFileSync(data_file, JSON.stringify({timestamp: Date.now(), data: req.body}), e => {
-                res.sendStatus(500);
-            });
-            res.sendStatus(200);
-        },
-        () => res.status(401).send('Authentication Failed')
-    );
+    if (!authModule.validateRequest(req))
+        res.status(401).send('Authentication Failed');
+    else {
+        fs.writeFileSync(data_file, JSON.stringify({timestamp: Date.now(), data: req.body}), e => {
+            res.sendStatus(500);
+        });
+        res.sendStatus(200);
+    }
 });
 
 app.listen(port, () => console.log(`calendar server listening at ${hostname}:${port}`));
