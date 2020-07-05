@@ -1,4 +1,5 @@
 let dataModule = require('./data_handler');
+const { logger } = require('./loggers');
 const fs = require('fs');
 const backup_dir = "entries_bkp"
 
@@ -8,7 +9,7 @@ module.exports = {
         const fileName = getFileName(now);
         const filePath = backup_dir + "/" + fileName;
 
-        console.log('Backuing up data. target file: ' + filePath);
+       logger.info('Back-up func running. Target file: ' + filePath);
         if (!fs.existsSync(backup_dir)) {
             fs.mkdirSync(backup_dir);
         }
@@ -17,12 +18,12 @@ module.exports = {
         .then( d => {
             try {
                 fs.writeFileSync(filePath, d, 'utf8')
-                console.log("Backed up data successfully");
+                logger.info("Backed up data successfully");
             } catch (e) {
-                console.log("failed saving backup. error: " + e.message);
+                logger.warning("Failed saving backup. error: " + e.message);
             }
         }).catch( e => {
-            console.log("failed saving backup. error: " + e.message);
+            logger.warning("Failed saving backup. error: " + e.message);
         })
     }
 };

@@ -13,6 +13,7 @@ require('dotenv').config();
 const authModule = require('./auth');
 const dataModule = require('./data_handler');
 const backupModule = require('./data_backup');
+const { logger } = require('./loggers');
 
 const hostname = process.env.server_url;
 const client_origin = process.env.client_origin;
@@ -44,6 +45,7 @@ app.get('/', (req, res) => {
             res.status(200).set('Content-Type', 'application/json').send(data);
             latestTimestamp = JSON.parse(data).timestamp;
         }).catch( err => {
+            logger.error("Failed getting data. Error: " + err.message);
             res.status(500).send(err.message);
         });
     }
@@ -54,18 +56,20 @@ app.post('/', function (req, res) {
         res.status(401).send('Authentication Failed');
     else {
         if (req.body.timestamp < latestTimestamp) {
+            logger.error("Failed saving data. Stored data is newer than requested data");
             res.status(400).send('Stored data is newer');
         }
         dataModule.saveEntriesData(JSON.stringify(req.body))
         .then(() => {
             res.sendStatus(200);
         }).catch( e => {
+            logger.error("Failed saving data. Error: " + err.message);
             res.status(500).send(e.message);
         })
     }
 });
 
-console.log("starting data backups daemon");
+logger.info("Starting data backups daemon");
 let job = new CronJob('0 0 * * *', backupModule.createDataBackup, null, true, 'Asia/Jerusalem');
 job.start();
 
@@ -75,7 +79,7 @@ if (hostname.startsWith("https")) {
         cert: fs.readFileSync('certs/cert.pem')
     };
     let httpsServer = https.createServer(httpsOptions, app);
-    httpsServer.listen(port, () => console.log(`calendar secured server listening at ${hostname}:${port}`));
+    httpsServer.listen(port, () => logger.info(`calendar secured server listening at ${hostname}:${port}`));
 }
 else
-    app.listen(port, () => console.log(`calendar server listening at ${hostname}:${port}`));
+    app.listen(port, () => logger.info(`calendar server listening at ${hostname}:${port}`));

@@ -1,6 +1,7 @@
 
 const fs = require('fs');
 const { resolve } = require('path');
+const { logger } = require('./loggers');
 const data_file="entries.json";
 const cache_timeout = 3600;
 let data_cache;
@@ -12,6 +13,7 @@ module.exports = {
         if (data_cache != null && last_cache_time != null && now - last_cache_time <= cache_timeout ) {
             return data_cache;
         }
+        logger.info("Fetching data from file (and not cache)");
         return new Promise((resolve, reject) => {
             fs.readFile(data_file, 'utf8', (err, data) => {
                 if (err)
