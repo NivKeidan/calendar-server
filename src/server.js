@@ -6,13 +6,11 @@ const helmet = require('helmet');
 const path = require('path');
 const bodyParser = require('body-parser');
 const fs = require('fs');
-const CronJob = require('cron').CronJob;
 require('dotenv').config();
 
 // app modules
 const authModule = require('./auth');
 const dataModule = require('./data_handler');
-const backupModule = require('./data_backup');
 const { logger } = require('./loggers');
 
 const hostname = process.env.server_url;
@@ -68,10 +66,6 @@ app.post('/', function (req, res) {
         })
     }
 });
-
-logger.info("Starting data backups daemon");
-let job = new CronJob('0 0 * * *', backupModule.createDataBackup, null, true, 'Asia/Jerusalem');
-job.start();
 
 if (hostname.startsWith("https")) {
     const httpsOptions = {
