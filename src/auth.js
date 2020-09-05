@@ -13,7 +13,7 @@ module.exports = {
         if (login === username && pw === password) {
             return true;
         }
-        logger.warning("Failed authentication for user " + login + "\n");
+        logger.warn("Failed authentication for user " + login + "\n");
         return false;
     }
 }
