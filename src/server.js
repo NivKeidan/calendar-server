@@ -61,7 +61,7 @@ app.post('/', function (req, res) {
         .then(() => {
             res.sendStatus(200);
         }).catch( e => {
-            logger.error("Failed saving data. Error: " + err.message);
+            logger.error("Failed saving data. Error: " + e.message);
             res.status(500).send(e.message);
         })
     }
