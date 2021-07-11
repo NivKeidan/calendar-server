@@ -1,0 +1,12 @@
+[Unit]
+Description=Cheeky Calendar Server
+After=network-online.target
+
+[Service]
+Restart=always
+ExecStart=/home/ubuntu/calendar-server/run_server.sh
+TimeoutStartSec=15
+
+[Install]
+WantedBy=multi-user.target
+
