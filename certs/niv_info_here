@@ -1,0 +1,11 @@
+godaddy domain expiration: 27.6.22
+cert expiration:  16.7.21
+
+to renew:
+  open access to port 80
+  sudo certbot renew
+  new cert locations:
+   - /etc/letsencrypt/live/calendar.cheekyservice.com/fullchain.pem 
+   - /etc/letsencrypt/live/calendar.cheekyservice.com/privkey.pem 
+  copy new certs to cert.pem and key.pem in certs folder, restart sever
+  update the expiration data in this file
